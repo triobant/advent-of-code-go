@@ -8,17 +8,39 @@ import (
 )
 
 func main() {
-    file, err := os.Open("input1.txt")
+    file, scanner, err := readInputFile("input1.txt")
     if err != nil {
-        fmt.Errorf("Error opening file: %e", err)
+        fmt.Errorf("Error reading input in main: %e", err)
+        return
     }
     defer file.Close()
 
-    scanner := bufio.NewScanner(file)
-    if err != nil {
-        fmt.Errorf("Error opening file: %e", err)
-    }
+    left, right, numbs := leftAndRight(scanner)
 
+    one := partOne(left, right)
+    two := partTwo(left, numbs)
+
+    fmt.Println(one)
+    fmt.Println(two)
+}
+
+func partOne(left, right []int) int {
+    sumDists := 0
+    for i := range left {
+        sumDists += Abs(right[i] - left[i])
+    }
+    return sumDists
+}
+
+func partTwo(left []int, numbs map[int]int) int {
+    score := 0
+    for i := range left {
+        score += left[i] * numbs[left[i]]
+    }
+    return score
+}
+
+func leftAndRight(scanner *bufio.Scanner) ([]int, []int, map[int]int){
     var left, right []int
     numbs := map[int]int{}
     for scanner.Scan() {
@@ -32,19 +54,21 @@ func main() {
     slices.Sort(left)
     slices.Sort(right)
 
-    sumDists, score := 0, 0
-    for i := range left {
-        sumDists += abs(right[i] - left[i])
-        score += left[i] * numbs[left[i]]
-    }
-
-    fmt.Println(sumDists)
-    fmt.Println(score)
+    return left, right, numbs
 }
 
-func abs(x int) int {
+func Abs(x int) int {
     if x < 0 {
         return -x
     }
     return x
+}
+
+func readInputFile(fileName string) (*os.File, *bufio.Scanner, error) {
+    file, err := os.Open(fileName)
+    if err != nil {
+        return nil, nil, fmt.Errorf("Error opening file: %e", err)
+    }
+
+    return file, bufio.NewScanner(file), nil
 }
