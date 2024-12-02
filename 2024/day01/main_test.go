@@ -25,8 +25,8 @@ func TestPart1(t *testing.T) {
             }
             defer file.Close()
 
-            left, right, _ := leftAndRight(scanner)
-            actual := partOne(left, right)
+            data := parseInputData(scanner)
+            actual := partOne(data.left, data.right)
 
             if actual != tt.expected {
                 t.Errorf("Test %v - %s FAIL: expected dist: %v, actual: %v", i, tt.name, tt.expected, actual)
@@ -56,8 +56,8 @@ func TestPart2(t *testing.T) {
             }
             defer file.Close()
 
-            left, _, numbs := leftAndRight(scanner)
-            actual := partTwo(left, numbs)
+            data := parseInputData(scanner)
+            actual := partTwo(data.left, data.numbs)
 
             if actual != tt.expected {
                 t.Errorf("Test %v - %s FAIL: expected dist: %v, actual: %v", i, tt.name, tt.expected, actual)
